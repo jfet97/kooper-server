@@ -1,8 +1,14 @@
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
+const socket = require('socket.io');
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+
+
+
+
+
 
 app.use(helmet());
 app.use(cors());
@@ -101,6 +107,22 @@ app.post('/', function (req, res) {
 
  
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`server in ascolto sulla ${PORT}`);
+});
+
+
+// Socket
+const io = socket(server);
+
+io.on('connection', (socket) => {
+    console.log("made socket connection", socket.id);
+
+    
+    socket.on('test', (data) => {
+    });
+
+
+    socket.on('test', (data) => {
+    });
 });
