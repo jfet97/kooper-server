@@ -8,6 +8,8 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json()); // middleware per il parsing del json nelle richieste POST
 
+
+
 function handleOutputContexts(obj) {
 
     for (let i = 0; i < obj.length; i++) {
@@ -16,9 +18,11 @@ function handleOutputContexts(obj) {
     return null;
 }
 
+
 app.get("/", (req, res) => {
     res.send("Hello from jfet!");
 });
+
 
 app.post('/', function (req, res) {
 
@@ -29,18 +33,12 @@ app.post('/', function (req, res) {
     const outputContexts = response.queryResult.outputContexts;
     const outputValidContext = handleOutputContexts(outputContexts);
     const intent = response.queryResult.intent;
-
-
-
-
     const responseObject = {
         "fulfillmentText": whatToSay,
         "source": "simomarco.spacchiamotutto.itcomorg",
         "outputContexts": [outputValidContext]
     }
     res.json(responseObject);
-
-
 
     /* Modello risposta --------------------------
     const responseObject =
@@ -90,7 +88,6 @@ app.post('/', function (req, res) {
         ]
     }
 
-
     // Telegram --------------------------
     var request = require('request');
     request(`https://api.telegram.org/bot698041077:AAEJYAbxzx-iYCoGKcsorCyDLH57mHgcl4Q/sendMessage?chat_id=82262321&text=${JSON.stringify(req.body)}`, function (error, response, body) {
@@ -100,27 +97,9 @@ app.post('/', function (req, res) {
     })
 
  */
-
-
-
-
-
 });
 
-
-/*
-app.get("/modify-webpage", (req, res) => {
-    res.status(201)
-        .send("modify-webpage");
-});
-
-app.get("/modify-webpage/background-color", (req, res) => {
-    res.status(200)
-        .json({
-            risposta: "ciao"
-        });
-});
-*/
+ 
 
 app.listen(PORT, () => {
     console.log(`server in ascolto sulla ${PORT}`);
