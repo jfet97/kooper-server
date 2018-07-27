@@ -21,9 +21,6 @@ const server = app.listen(PORT, () => {
 const io = socket(server);
 
 io.on('connection', (socket) => {
-    io.sockets.emit('sfondo', {
-        colore: "giallo"
-    })
 });
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
