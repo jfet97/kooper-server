@@ -7,7 +7,8 @@ const PORT = process.env.PORT || 3000;
 const PORT_SOCKET = 5000;
 
 app.use(helmet());
-app.use(cors({ origin: 'http://localhost:5000', credentials: true }));
+// app.use(cors({ origin: 'http://localhost:5000', credentials: true }));
+app.use(cors());
 app.use(express.json()); // middleware per il parsing del json nelle richieste POST
 
 
@@ -20,6 +21,7 @@ const server_socket = app.listen(PORT_SOCKET, () => {
 
 
 const io = socket(server_socket);
+io.origins('*:*')
 
 io.on('connection', (socket) => {
    
