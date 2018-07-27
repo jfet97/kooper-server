@@ -30,7 +30,7 @@ app.use(allowCrossDomain);
 */
 
 app.use(express.json()); // middleware per il parsing del json nelle richieste POST
-
+app.use(express.static('build'));
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Socket
