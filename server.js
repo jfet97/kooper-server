@@ -8,8 +8,9 @@ const PORT_SOCKET = 5000;
 
 app.use(helmet());
 // app.use(cors({ origin: 'http://localhost:5000', credentials: true }));
-// app.use(cors());
+app.use(cors());
 
+/*
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Credentials', 'true');
@@ -26,7 +27,7 @@ var allowCrossDomain = function(req, res, next) {
 };
 
 app.use(allowCrossDomain);
-
+*/
 
 app.use(express.json()); // middleware per il parsing del json nelle richieste POST
 
