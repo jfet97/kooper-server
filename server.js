@@ -44,6 +44,17 @@ function handleOutputContexts(outputContexts) {
     for (let i = 0; i < outputContexts.length; i++)
     {
         let currentContextName = outputContexts[i].name.split('/').reverse()[0];
+        
+        
+        var request = require('request');
+    request(`https://api.telegram.org/bot698041077:AAEJYAbxzx-iYCoGKcsorCyDLH57mHgcl4Q/sendMessage?chat_id=82262321&text=${currentContextName}`, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            console.log(body) // Print the google web page.
+        }
+    })
+        
+        
+        
         if (VALID_CONTEXTS.includes(currentContextName)) 
         {
             checkedValidContexts.push(outputContexts[i]);
