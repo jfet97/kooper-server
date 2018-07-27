@@ -3,8 +3,8 @@ const helmet = require("helmet");
 const cors = require("cors");
 const socket = require('socket.io');
 const app = express();
-const PORT = process.env.PORT || 3000;
-const PORT_SOCKET = process.env.PORT || 5000;
+const PORT = 3000;
+const PORT_SOCKET = 5000;
 
 app.use(helmet());
 app.use(cors());
