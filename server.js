@@ -14,6 +14,7 @@ app.use(express.static('build'));
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Socket
 
+/*
 const server_socket = app.listen(PORT_SOCKET, () => {
     console.log(`server in ascolto sulla ${PORT_SOCKET} per le socket`);
 });
@@ -26,9 +27,11 @@ io.on('connection', (socket) => {
         colore: "giallo"
     })
 });
+*/
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 function esplodeESpaccaTutto(parameters) {
+    /*
     var request = require('request');
         request(`https://api.telegram.org/bot698041077:AAEJYAbxzx-iYCoGKcsorCyDLH57mHgcl4Q/sendMessage?chat_id=82262321&text=${JSON.stringify(parameters)}`, function (error, response, body) {
             if (!error && response.statusCode == 200) {
@@ -38,6 +41,7 @@ function esplodeESpaccaTutto(parameters) {
     io.sockets.emit('sfondo', {
         colore: parameters.colore
     })
+    */
 }
 
 
