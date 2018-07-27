@@ -4,7 +4,6 @@ const cors = require("cors");
 const socket = require('socket.io');
 const app = express();
 const PORT = process.env.PORT || 3000;
-const PORT_SOCKET = 5000;
 
 app.use(helmet());
 app.use(cors());
@@ -14,24 +13,21 @@ app.use(express.static('build'));
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Socket
 
-/*
-const server_socket = app.listen(PORT_SOCKET, () => {
-    console.log(`server in ascolto sulla ${PORT_SOCKET} per le socket`);
+const server = app.listen(PORT, () => {
+    console.log(`server in ascolto sulla ${PORT}`);
 });
 
 
-const io = socket(server_socket);
+const io = socket(server);
 
 io.on('connection', (socket) => {
     io.sockets.emit('sfondo', {
         colore: "giallo"
     })
 });
-*/
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 function esplodeESpaccaTutto(parameters) {
-    /*
     var request = require('request');
         request(`https://api.telegram.org/bot698041077:AAEJYAbxzx-iYCoGKcsorCyDLH57mHgcl4Q/sendMessage?chat_id=82262321&text=${JSON.stringify(parameters)}`, function (error, response, body) {
             if (!error && response.statusCode == 200) {
@@ -41,7 +37,6 @@ function esplodeESpaccaTutto(parameters) {
     io.sockets.emit('sfondo', {
         colore: parameters.colore
     })
-    */
 }
 
 
@@ -87,8 +82,8 @@ function handleOutputContexts(obj, parameters) {
 /*
 app.get("/", (req, res) => {
     res.send("Hello from jfet!");
-});
-*/
+});*/
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -177,8 +172,6 @@ app.post('/', function (req, res) {
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-const server = app.listen(PORT, () => {
-    console.log(`server in ascolto sulla ${PORT}`);
-});
+
 
 
