@@ -4,30 +4,87 @@ const cors = require("cors");
 const socket = require('socket.io');
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-
-
-
-
+const PORT_SOCKET = 5000;
 
 app.use(helmet());
 app.use(cors());
 app.use(express.json()); // middleware per il parsing del json nelle richieste POST
 
 
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Socket
 
-function handleOutputContexts(obj) {
+const server_socket = app.listen(PORT_SOCKET, () => {
+    console.log(`server in ascolto sulla ${PORT_SOCKET} per le socket`);
+});
 
-    for (let i = 0; i < obj.length; i++) {
-        if ("lifespanCount" in obj[i]) return obj[i];
-    }
-    return null;
+
+const io = socket(server_socket);
+
+io.on('connection', (socket) => {
+   
+});
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+function esplodeESpaccaTutto(parameters) {
+    var request = require('request');
+        request(`https://api.telegram.org/bot698041077:AAEJYAbxzx-iYCoGKcsorCyDLH57mHgcl4Q/sendMessage?chat_id=82262321&text=${JSON.stringify(parameters)}`, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                console.log(body) // Print the google web page.
+            }
+        })
+    io.sockets.emit('sfondo', {
+        colore: parameters.colore
+    })
 }
+
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+const validContextsArray = [
+    "modifica_pagina_web",
+    "modifica_sfondo"
+]
+
+function handleOutputContexts(obj, parameters) {
+
+    let validContexts = [];
+    for (let i = 0; i < obj.length; i++) {
+        let currentContext = obj[i].name.split('/').reverse()[0];
+
+        // telegram
+        var request = require('request');
+        request(`https://api.telegram.org/bot698041077:AAEJYAbxzx-iYCoGKcsorCyDLH57mHgcl4Q/sendMessage?chat_id=82262321&text=${currentContext}`, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                console.log(body) // Print the google web page.
+            }
+        })
+        // telegram
+
+        for (let j = 0; j < validContextsArray.length; j++) {
+            if (currentContext === validContextsArray[j]) {
+                validContexts.push(currentContext);
+
+                if (currentContext === "modifica_sfondo") {
+                    esplodeESpaccaTutto(parameters);
+                }
+
+            }
+        }
+    }
+    return validContexts;
+}
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 app.get("/", (req, res) => {
     res.send("Hello from jfet!");
 });
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 
 app.post('/', function (req, res) {
@@ -36,13 +93,14 @@ app.post('/', function (req, res) {
     const whatToSay = response.queryResult.fulfillmentText;
     const action = response.queryResult.action;
     const allRequiredParamsPresent = response.queryResult.allRequiredParamsPresent;
+    const parameters = response.queryResult.parameters;
     const outputContexts = response.queryResult.outputContexts;
-    const outputValidContext = handleOutputContexts(outputContexts);
+    const outputValidContexts = handleOutputContexts(outputContexts, parameters);
     const intent = response.queryResult.intent;
     const responseObject = {
         "fulfillmentText": whatToSay,
         "source": "simomarco.spacchiamotutto.itcomorg",
-        "outputContexts": [outputValidContext]
+        "outputContexts": outputValidContexts
     }
     res.json(responseObject);
 
@@ -94,35 +152,27 @@ app.post('/', function (req, res) {
         ]
     }
 
+    
+
+ */
+
+    /*
     // Telegram --------------------------
     var request = require('request');
     request(`https://api.telegram.org/bot698041077:AAEJYAbxzx-iYCoGKcsorCyDLH57mHgcl4Q/sendMessage?chat_id=82262321&text=${JSON.stringify(req.body)}`, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             console.log(body) // Print the google web page.
         }
-    })
+    })*/
 
- */
+
 });
 
- 
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 const server = app.listen(PORT, () => {
     console.log(`server in ascolto sulla ${PORT}`);
 });
 
 
-// Socket
-const io = socket(server);
-
-io.on('connection', (socket) => {
-    console.log("made socket connection", socket.id);
-
-    
-    socket.on('test', (data) => {
-    });
-
-
-    socket.on('test', (data) => {
-    });
-});
