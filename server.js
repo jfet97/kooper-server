@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3000;
 const PORT_SOCKET = 5000;
 
 app.use(helmet());
-app.use(cors({ origin: 'http://localhost:5000', credentials: true }));
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json()); // middleware per il parsing del json nelle richieste POST
 
 
