@@ -11,7 +11,7 @@ app.use(helmet());
 // app.use(cors());
 
 var allowCrossDomain = function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'https://93.35.247.99/');
+    res.header('Access-Control-Allow-Origin', 'http://93.35.247.99/');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
 
