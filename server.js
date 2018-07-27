@@ -21,65 +21,55 @@ const server = app.listen(PORT, () => {
 const io = socket(server);
 
 io.on('connection', (socket) => {
+    io.sockets.emit('sfondo', {
+        colore: "giallo"
+    })
 });
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-function esplodeESpaccaTutto(parameters) {
-    var request = require('request');
-        request(`https://api.telegram.org/bot698041077:AAEJYAbxzx-iYCoGKcsorCyDLH57mHgcl4Q/sendMessage?chat_id=82262321&text=${JSON.stringify(parameters)}`, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                console.log(body) // Print the google web page.
-            }
-        })
+function executeChangeColorBackground(parameters) {
     io.sockets.emit('sfondo', {
         colore: parameters.colore
     })
 }
 
-
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-const validContextsArray = [
+const VALID_CONTEXTS = [
     "modifica_pagina_web",
     "modifica_sfondo"
 ]
 
-function handleOutputContexts(obj, parameters) {
+function handleOutputContexts(outputContexts) {
 
-    let validContexts = [];
-    for (let i = 0; i < obj.length; i++) {
-        let currentContext = obj[i].name.split('/').reverse()[0];
-
-        // telegram
-        var request = require('request');
-        request(`https://api.telegram.org/bot698041077:AAEJYAbxzx-iYCoGKcsorCyDLH57mHgcl4Q/sendMessage?chat_id=82262321&text=${currentContext}`, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                console.log(body) // Print the google web page.
-            }
-        })
-        // telegram
-
-        for (let j = 0; j < validContextsArray.length; j++) {
-            if (currentContext === validContextsArray[j]) {
-                validContexts.push(currentContext);
-
-                if (currentContext === "modifica_sfondo") {
-                    esplodeESpaccaTutto(parameters);
-                }
-
-            }
+    let checkedValidContexts = [];
+    for (let i = 0; i < outputContexts.length; i++)
+    {
+        let currentContextName = outputContexts[i].name.split('/').reverse()[0];
+        if (VALID_CONTEXTS.includes(currentContextName)) 
+        {
+            checkedValidContexts.push(outputContexts[i]);
         }
     }
-    return validContexts;
+    return checkedValidContexts;
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-/*
-app.get("/", (req, res) => {
-    res.send("Hello from jfet!");
-});*/
+function handleCommands(outputValidContexts, parameters) {
+    if (outputValidContexts.map(el => el.name.split('/').reverse()[0]).includes("modifica_sfondo")) {
+        executeChangeColorBackground(parameters);
+    }
+}
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+function updateLifespanCount(outputValidContexts) {
+    outputValidContexts.forEach(element => {
+        element.lifespanCount--;
+    });
+}
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -93,8 +83,13 @@ app.post('/', function (req, res) {
     const allRequiredParamsPresent = response.queryResult.allRequiredParamsPresent;
     const parameters = response.queryResult.parameters;
     const outputContexts = response.queryResult.outputContexts;
-    const outputValidContexts = handleOutputContexts(outputContexts, parameters);
+    const outputValidContexts = handleOutputContexts(outputContexts);
     const intent = response.queryResult.intent;
+
+    handleCommands(outputValidContexts, parameters);
+    updateLifespanCount(outputValidContexts);
+
+    
     const responseObject = {
         "fulfillmentText": whatToSay,
         "source": "simomarco.spacchiamotutto.itcomorg",
