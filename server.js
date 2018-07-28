@@ -42,6 +42,14 @@ function closeMenu() {
     })
 }
 
+function swipeCarousel(parameters) {
+    io.sockets.emit('carousel', {
+        swipe: parameters.direzione
+    })
+}
+
+
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -49,7 +57,8 @@ const VALID_CONTEXTS = [
     "modifica_pagina_web",
     "modifica_sfondo",
     "apri_menu",
-    "chiudi_menu"
+    "chiudi_menu",
+    "carosello"
 ]
 
 function handleOutputContexts(outputContexts) {
@@ -72,14 +81,19 @@ function handleOutputContexts(outputContexts) {
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 function handleCommands(outputValidContexts, parameters) {
-    if (outputValidContexts.map(el => el.name.split('/').reverse()[0]).includes("modifica_sfondo")) {
+    const outputCalidConextsNames = outputValidContexts.map(el => el.name.split('/').reverse()[0]);
+
+    if ( outputCalidConextsNames.includes("modifica_sfondo")) {
         executeChangeColorBackground(parameters);
     }
-    if (outputValidContexts.map(el => el.name.split('/').reverse()[0]).includes("apri_menu")) {
+    if (outputCalidConextsNames.includes("apri_menu")) {
         openMenu();
     }
-    if (outputValidContexts.map(el => el.name.split('/').reverse()[0]).includes("chiudi_menu")) {
+    if (outputCalidConextsNames.includes("chiudi_menu")) {
         closeMenu();
+    }
+    if (outputCalidConextsNames.includes("carosello")) {
+        swipeCarousel(parameters);
     }
 }
 
