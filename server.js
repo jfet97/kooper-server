@@ -48,7 +48,7 @@ function swipeCarousel(parameters) {
     })
 }
 
-function swipeCarousel(parameters) {
+function showHideCarousel(parameters) {
     io.sockets.emit('carousel-onoff', {
         what: parameters.carosello_onoff
     })
