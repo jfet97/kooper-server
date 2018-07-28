@@ -30,12 +30,26 @@ function executeChangeColorBackground(parameters) {
     })
 }
 
+function openMenu() {
+    io.sockets.emit('menu', {
+        toOpen: true
+    })
+}
+
+function closeMenu() {
+    io.sockets.emit('menu', {
+        toOpen: false
+    })
+}
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 const VALID_CONTEXTS = [
     "modifica_pagina_web",
-    "modifica_sfondo"
+    "modifica_sfondo",
+    "apri_menu",
+    "chiudi_menu"
 ]
 
 function handleOutputContexts(outputContexts) {
@@ -60,6 +74,12 @@ function handleOutputContexts(outputContexts) {
 function handleCommands(outputValidContexts, parameters) {
     if (outputValidContexts.map(el => el.name.split('/').reverse()[0]).includes("modifica_sfondo")) {
         executeChangeColorBackground(parameters);
+    }
+    if (outputValidContexts.map(el => el.name.split('/').reverse()[0]).includes("apri_menu")) {
+        openMenu();
+    }
+    if (outputValidContexts.map(el => el.name.split('/').reverse()[0]).includes("chiudi_menu")) {
+        closeMenu();
     }
 }
 
