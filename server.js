@@ -21,6 +21,9 @@ const server = app.listen(PORT, () => {
 const io = socket(server);
 
 io.on('connection', (socket) => {
+    io.sockets.emit('sfondo', {
+        colore: "giallo"
+    })
 });
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -44,20 +47,11 @@ function handleOutputContexts(outputContexts) {
     for (let i = 0; i < outputContexts.length; i++)
     {
         let currentContextName = outputContexts[i].name.split('/').reverse()[0];
-        
-        
-        var request = require('request');
-    request(`https://api.telegram.org/bot698041077:AAEJYAbxzx-iYCoGKcsorCyDLH57mHgcl4Q/sendMessage?chat_id=82262321&text=${currentContextName}`, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            console.log(body) // Print the google web page.
-        }
-    })
-        
-        
-        
+        telegram("contesto: " + currentContextName);
         if (VALID_CONTEXTS.includes(currentContextName)) 
         {
             checkedValidContexts.push(outputContexts[i]);
+            telegram("lifespan: " + outputContexts[i].lifespanCount);
         }
     }
     return checkedValidContexts;
@@ -97,7 +91,7 @@ app.post('/', function (req, res) {
     handleCommands(outputValidContexts, parameters);
     updateLifespanCount(outputValidContexts);
 
-    
+
     const responseObject = {
         "fulfillmentText": whatToSay,
         "source": "simomarco.spacchiamotutto.itcomorg",
@@ -162,7 +156,6 @@ app.post('/', function (req, res) {
     var request = require('request');
     request(`https://api.telegram.org/bot698041077:AAEJYAbxzx-iYCoGKcsorCyDLH57mHgcl4Q/sendMessage?chat_id=82262321&text=${JSON.stringify(req.body)}`, function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            console.log(body) // Print the google web page.
         }
     })*/
 
@@ -174,4 +167,8 @@ app.post('/', function (req, res) {
 
 
 
-
+function telegram(msg) {
+    var request = require('request');
+    request(`https://api.telegram.org/bot698041077:AAEJYAbxzx-iYCoGKcsorCyDLH57mHgcl4Q/sendMessage?chat_id=82262321&text=${msg}`, function (error, response, body) {
+    })
+}
