@@ -45,11 +45,11 @@ function handleOutputContexts(outputContexts) {
     {
         let currentContextName = outputContexts[i].name.split('/').reverse()[0];
         // telegram("contesto: " + JSON.stringify(outputContexts[i]));
-        telegram("contesto: " + currentContextName);
+        // telegram("contesto: " + currentContextName);
         if (VALID_CONTEXTS.includes(currentContextName)) // && typeof outputContexts[i].lifespanCount 
         {
             checkedValidContexts.push(outputContexts[i]);
-            telegram("lifespan: " + (typeof outputContexts[i].lifespanCount));
+            // telegram("lifespan: " + (typeof outputContexts[i].lifespanCount));
         }
     }
     return checkedValidContexts;
