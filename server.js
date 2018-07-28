@@ -44,7 +44,7 @@ function handleOutputContexts(outputContexts) {
     for (let i = 0; i < outputContexts.length; i++)
     {
         let currentContextName = outputContexts[i].name.split('/').reverse()[0];
-        telegram("contesto: " + currentContextName);
+        telegram("contesto: " + JSON.stringify(outputContexts[i]));
         if (VALID_CONTEXTS.includes(currentContextName)) // && typeof outputContexts[i].lifespanCount 
         {
             checkedValidContexts.push(outputContexts[i]);
