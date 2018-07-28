@@ -64,11 +64,13 @@ function handleCommands(outputValidContexts, parameters) {
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+/* pare che avvenga in automatico lato dialogflow
 function updateLifespanCount(outputValidContexts) {
     outputValidContexts.forEach(element => {
         element.lifespanCount--;
     });
 }
+*/
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -86,7 +88,7 @@ app.post('/', function (req, res) {
     const intent = response.queryResult.intent;
 
     handleCommands(outputValidContexts, parameters);
-    updateLifespanCount(outputValidContexts);
+    // updateLifespanCount(outputValidContexts);
 
 
     const responseObject = {
