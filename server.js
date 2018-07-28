@@ -88,7 +88,7 @@ function handleOutputContexts(outputContexts) {
 function handleCommands(outputValidContexts, parameters) {
     const outputCalidConextsNames = outputValidContexts.map(el => el.name.split('/').reverse()[0]);
 
-    if ( outputCalidConextsNames.includes("modifica_sfondo")) {
+    if (outputCalidConextsNames.includes("modifica_sfondo")) {
         executeChangeColorBackground(parameters);
     }
     if (outputCalidConextsNames.includes("apri_menu")) {
