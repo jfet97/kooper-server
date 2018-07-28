@@ -48,7 +48,11 @@ function swipeCarousel(parameters) {
     })
 }
 
-
+function swipeCarousel(parameters) {
+    io.sockets.emit('carousel-onoff', {
+        what: parameters.carosello_onoff
+    })
+}
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -58,7 +62,8 @@ const VALID_CONTEXTS = [
     "modifica_sfondo",
     "apri_menu",
     "chiudi_menu",
-    "carosello"
+    "carosello",
+    "carosello_onoff"
 ]
 
 function handleOutputContexts(outputContexts) {
@@ -94,6 +99,10 @@ function handleCommands(outputValidContexts, parameters) {
     }
     if (outputCalidConextsNames.includes("carosello")) {
         swipeCarousel(parameters);
+    }
+
+    if (outputCalidConextsNames.includes("carosello_onoff")) {
+        showHideCarousel(parameters);
     }
 }
 
