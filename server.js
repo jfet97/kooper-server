@@ -44,7 +44,8 @@ function handleOutputContexts(outputContexts) {
     for (let i = 0; i < outputContexts.length; i++)
     {
         let currentContextName = outputContexts[i].name.split('/').reverse()[0];
-        telegram("contesto: " + JSON.stringify(outputContexts[i]));
+        // telegram("contesto: " + JSON.stringify(outputContexts[i]));
+        telegram("contesto: " + currentContextName);
         if (VALID_CONTEXTS.includes(currentContextName)) // && typeof outputContexts[i].lifespanCount 
         {
             checkedValidContexts.push(outputContexts[i]);
@@ -64,13 +65,39 @@ function handleCommands(outputValidContexts, parameters) {
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-/* pare che avvenga in automatico lato dialogflow
+
+// Dialogflow, dopo aver ricevuto e analizzato un messaggio, invia
+// i dati al server tra i quali sono presenti anche i contesti (proprietà come lifespan incluse e aggiornate)
+// nei quali quello specifico messaggio dovrà far ricadere dialogflow stessa. 
+// È dialogflow che dice al server cosa il server deve rispondere a dialogflow, per far ricadere 
+// l'agent nello stato successivo...i contesti ricevuti dal server non corrispondono a quelli correnti ma a quelli
+// immediatamente successivi nei queli l'agent dovrà ricadere...essi vanno rispediti indietro
+// Ipotizziamo che lo stato modifica_sfondo sia stato scelto lifespan 1 e che il messaggio parlato sia "imposta lo sfondo di colore blu":
+// 1) Dialogflow interpreta il messaggio, riconosce che lo stato successivo sarà modifica_sfondo e informa il server
+//    inviandolo come contesto 
+// 2) Il server, analizzando il contesto da inviare come risposta, riconosce modifica_sfondo, trova il colore blu ed esegue l'azione
+//    per poi rispondere a Dialogflow inviandoli ciò che ha ricevuto: stato = modifica_sfondo e lifespan = 1
+// 3) Dialogflow analizza la risposta e imposta lo stato corrente, imponendo l'agent di entrare nello stato modifica_sfondo
+// 4) Nuovo messaggio arbitrario, DialogFlow comunica con il server dicendo: "lo stato futuro di modifica_sfondo dovrà essere 0 (oppure undefined)
+// 5) Il server, analizzando il contesto da inviare come risposta, riconosce modifica_sfondo, non trova colore quindi si ricade nel caso "bianco" ed esegue l'azione
+//    per poi rispondere a Dialogflow inviandoli ciò che ha ricevuto: stato = modifica_sfondo e lifespan = 0/undefined
+// 6) Dialogflow analizza la risposta e imposta lo stato corrente, eliminando modifica_sfondo
+// Soluzione?
+// Facciamo durare a lungo solo lo stato modifica_pagina_web, mentre impostiamo lato dialogflow tutti gli altri stati ad uno
+// Quando una frase come "imposta lo sfondo di colore blu" viene detta, dialogflow informa che lo stato futuro dovrà
+// essere modifica_sfondo con lifespan 1 ... il server come sempre rileva modifica_sfondo nel contesto FUTURO e il colore ed esegue l'azione
+// ma modifica lo stato successivo impostando a zero il lifespan del contesto modifica_sfondo
+// dialogflow quindi, sebbene abbia detto al server che il contesto che doveva ricevere in risposta era modifica_sfondo - 1,
+// ricevendo modifica_sfondo - 0 nemmeno fa entrare l'agent in quello stato (che quindi sarà stato utile solo lato server) 
+// e nel messaggio successivo nemmeno invierà modifica_sfondo - 0, perché inviando i contesti futuri, essendo per dialogflow modifica_sfondo - 0
+// il contesto CORRENTE, modifica_sfondo sarà in automatico svanito
 function updateLifespanCount(outputValidContexts) {
     outputValidContexts.forEach(element => {
+        if(element.name === "modifica_pagina_web") return;
         element.lifespanCount--;
     });
-}
-*/
+}1
+
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -88,7 +115,7 @@ app.post('/', function (req, res) {
     const intent = response.queryResult.intent;
 
     handleCommands(outputValidContexts, parameters);
-    // updateLifespanCount(outputValidContexts);
+    updateLifespanCount(outputValidContexts);
 
 
     const responseObject = {
