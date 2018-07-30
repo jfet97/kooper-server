@@ -66,9 +66,13 @@ function goToRoute(parameters) {
             responseObject.goToHome = true;
             break;
     }
-
-    telegram("emissione effettuata");
     io.sockets.emit('change-router', responseObject)
+}
+
+function toggleText(parameters) {
+    io.sockets.emit('toggle-text', {
+        what: parameters.testo_toggle
+    })
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -81,7 +85,8 @@ const VALID_CONTEXTS = [
     "chiudi_menu",
     "carosello",
     "carosello_onoff",
-    "vai_alla_pagina"
+    "vai_alla_pagina",
+    "testo_toggle"
 ]
 
 function handleOutputContexts(outputContexts) {
@@ -94,7 +99,7 @@ function handleOutputContexts(outputContexts) {
         if (VALID_CONTEXTS.includes(currentContextName)) 
         {
             checkedValidContexts.push(outputContexts[i]);
-            telegram("context: " + currentContextName);
+            // telegram("context: " + currentContextName);
         }
     }
     return checkedValidContexts;
@@ -123,8 +128,11 @@ function handleCommands(outputValidContexts, parameters) {
     }
 
     if (outputCalidConextsNames.includes("vai_alla_pagina")) {
-        telegram("vai alla pagina trovato");
         goToRoute(parameters);
+    }
+
+    if (outputCalidConextsNames.includes("testo_toggle")) {
+        toggleText(parameters);
     }
 }
 
