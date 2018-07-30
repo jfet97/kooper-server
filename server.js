@@ -67,7 +67,7 @@ function goToRoute(parameters) {
             break;
     }
 
-    elegram("amissione effettuata");
+    telegram("emissione effettuata");
     io.sockets.emit('change-router', responseObject)
 }
 
