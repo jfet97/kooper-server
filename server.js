@@ -71,7 +71,7 @@ function goToRoute(parameters) {
 
 function toggleText(parameters) {
     io.sockets.emit('toggle-text', {
-        what: parameters.testo_toggle
+        showText: parameters.testo_toggle
     })
 }
 
