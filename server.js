@@ -94,7 +94,7 @@ function handleOutputContexts(outputContexts) {
         if (VALID_CONTEXTS.includes(currentContextName)) 
         {
             checkedValidContexts.push(outputContexts[i]);
-            telegram("context: " + outputContexts[i]);
+            telegram("context: " + currentContextName);
         }
     }
     return checkedValidContexts;
