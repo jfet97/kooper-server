@@ -54,6 +54,22 @@ function showHideCarousel(parameters) {
     })
 }
 
+function goToRoute(parameters) {
+    let responseObject = {};
+
+    switch (parameters.nome_pagina) {
+        case "testo":
+            responseObject.goToTesto = true;
+            break;
+        case "principale":
+        default:
+            responseObject.goToHome = true;
+            break;
+    }
+    
+    io.sockets.emit('change-router', responseObject)
+}
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -63,14 +79,14 @@ const VALID_CONTEXTS = [
     "apri_menu",
     "chiudi_menu",
     "carosello",
-    "carosello_onoff"
+    "carosello_onoff",
+    "vai_alla_pagina"
 ]
 
 function handleOutputContexts(outputContexts) {
 
     let checkedValidContexts = [];
-    for (let i = 0; i < outputContexts.length; i++)
-    {
+    for (let i = 0; i < outputContexts.length; i++) {
         let currentContextName = outputContexts[i].name.split('/').reverse()[0];
         // telegram("contesto: " + JSON.stringify(outputContexts[i]));
         // telegram("contesto: " + currentContextName);
@@ -104,6 +120,10 @@ function handleCommands(outputValidContexts, parameters) {
     if (outputCalidConextsNames.includes("carosello_onoff")) {
         showHideCarousel(parameters);
     }
+
+    if (outputCalidConextsNames.includes("vai_alla_pagina")) {
+        goToRoute(parameters);
+    }
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -136,10 +156,10 @@ function handleCommands(outputValidContexts, parameters) {
 // il contesto CORRENTE, modifica_sfondo sarà in automatico svanito
 function updateLifespanCount(outputValidContexts) {
     outputValidContexts.forEach(element => {
-        if(element.name === "modifica_pagina_web") return;
+        if (element.name === "modifica_pagina_web") return;
         element.lifespanCount--;
     });
-}1
+} 1
 
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
