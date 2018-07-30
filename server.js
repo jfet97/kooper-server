@@ -66,7 +66,8 @@ function goToRoute(parameters) {
             responseObject.goToHome = true;
             break;
     }
-    
+
+    elegram("amissione effettuata");
     io.sockets.emit('change-router', responseObject)
 }
 
@@ -90,10 +91,10 @@ function handleOutputContexts(outputContexts) {
         let currentContextName = outputContexts[i].name.split('/').reverse()[0];
         // telegram("contesto: " + JSON.stringify(outputContexts[i]));
         // telegram("contesto: " + currentContextName);
-        if (VALID_CONTEXTS.includes(currentContextName)) // && typeof outputContexts[i].lifespanCount 
+        if (VALID_CONTEXTS.includes(currentContextName)) 
         {
             checkedValidContexts.push(outputContexts[i]);
-            // telegram("lifespan: " + (typeof outputContexts[i].lifespanCount));
+            telegram("context: " + outputContexts[i]);
         }
     }
     return checkedValidContexts;
@@ -122,6 +123,7 @@ function handleCommands(outputValidContexts, parameters) {
     }
 
     if (outputCalidConextsNames.includes("vai_alla_pagina")) {
+        telegram("vai alla pagina trovato");
         goToRoute(parameters);
     }
 }
